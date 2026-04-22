@@ -8,7 +8,9 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Req,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import { ScoresService } from './scores.service';
 import { TeamScoreResponseDto } from './dto/team-score-response.dto';
 import { AddScoreDto } from './dto/add-score.dto';
@@ -18,16 +20,14 @@ import { SetScoreDto } from './dto/set-score.dto';
 export class ScoresController {
   constructor(private readonly scoresService: ScoresService) {}
 
-  // trailing slash — TeamModel 호환 (teamRank non-null, 모두 순위 부여)
-  @Get('scores/')
-  listTeams(): Promise<TeamScoreResponseDto[]> {
-    return this.scoresService.listTeams();
-  }
-
-  // no trailing slash — TeamScoreModel 호환 (teamRank nullable, 점수 0팀은 null)
+  // 프론트는 '/scores/' (trailing slash)와 '/scores'를 의미적으로 구분함.
+  // NestJS 데코레이터가 path의 trailing slash를 정규화하므로, 단일 핸들러에서 originalUrl로 분기.
+  //  - /scores/ → TeamModel 호환: 모든 팀에 rank 부여 (teamRank non-null)
+  //  - /scores  → TeamScoreModel 호환: 점수 0팀은 teamRank=null
   @Get('scores')
-  listScores(): Promise<TeamScoreResponseDto[]> {
-    return this.scoresService.listScores();
+  listScores(@Req() req: Request): Promise<TeamScoreResponseDto[]> {
+    const hasTrailingSlash = this.detectTrailingSlash(req.originalUrl);
+    return hasTrailingSlash ? this.scoresService.listTeams() : this.scoresService.listScores();
   }
 
   @Post('scores')
@@ -49,5 +49,10 @@ export class ScoresController {
   @HttpCode(200)
   resetAll(): Promise<TeamScoreResponseDto[]> {
     return this.scoresService.resetAll();
+  }
+
+  private detectTrailingSlash(originalUrl: string): boolean {
+    const pathOnly = originalUrl.split('?')[0];
+    return pathOnly.endsWith('/');
   }
 }
