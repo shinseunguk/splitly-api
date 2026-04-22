@@ -2,7 +2,7 @@
   "name": "splitly-api",
   "version": "0.0.1",
   "description": "Splitly 점수판 백엔드 API (NestJS + TypeORM + PostgreSQL)",
-  "author": "신승욱 <ukseung.dev@gmail.com>",
+  "author": "shinseunguk <krdut1@gmail.com>",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
