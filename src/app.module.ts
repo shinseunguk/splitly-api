@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { loadConfiguration, AppConfig } from './config/configuration';
 import { Team } from './teams/entities/team.entity';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { Team } from './teams/entities/team.entity';
         };
       },
     }),
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
