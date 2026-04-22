@@ -42,7 +42,8 @@ npm run start:dev
 | `APP_PORT` | `3000` | NestJS 서버 포트 |
 | `NODE_ENV` | `development` | `production`이면 synchronize 강제 OFF |
 | `DB_HOST` | `postgres` | Docker Compose 내부에서는 `postgres`, 호스트 개발 시 `localhost` |
-| `DB_PORT` | `5432` | |
+| `DB_PORT` | `5432` | 컨테이너 내부 포트 (앱이 postgres 호스트로 접속할 때 사용) |
+| `DB_PORT_HOST` | `5433` | 호스트에 노출되는 포트. 로컬 Postgres(5432)와 충돌 방지 |
 | `DB_USER` / `DB_PASSWORD` / `DB_NAME` | `splitly` / `splitly` / `splitly` | |
 | `TYPEORM_SYNC` | `true` | 개발용. non-prod에서만 적용 |
 | `CORS_ORIGINS` | `http://localhost:8080,http://127.0.0.1:8080` | 콤마 구분. `*` 포함 시 모든 origin 허용 |
@@ -121,7 +122,8 @@ e2e 테스트는 실제 PostgreSQL 연결이 필요합니다.
 docker compose up -d postgres
 cp .env.example .env
 npm install
-npm run test:e2e
+# 호스트에서 테스트 실행 시 DB_HOST/DB_PORT override 필요 (DB_PORT_HOST=5433)
+DB_HOST=localhost DB_PORT=5433 npm run test:e2e
 ```
 
 테스트는 `TRUNCATE teams` 로 매 케이스마다 초기화하므로, 개발 데이터를 보호하고 싶다면 `.env`의 `DB_NAME`을 `splitly_test` 등 별도 이름으로 설정하세요.
