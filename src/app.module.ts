@@ -5,9 +5,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { loadConfiguration, AppConfig } from './config/configuration';
 import { Team } from './teams/entities/team.entity';
+import { GameState } from './game-state/entities/game-state.entity';
 import { HealthModule } from './health/health.module';
 import { TeamsModule } from './teams/teams.module';
 import { ScoresModule } from './scores/scores.module';
+import { GameStateModule } from './game-state/game-state.module';
 
 @Module({
   imports: [
@@ -29,7 +31,7 @@ import { ScoresModule } from './scores/scores.module';
           username: db.username,
           password: db.password,
           database: db.database,
-          entities: [Team],
+          entities: [Team, GameState],
           synchronize: db.synchronize,
         };
       },
@@ -37,6 +39,7 @@ import { ScoresModule } from './scores/scores.module';
     HealthModule,
     TeamsModule,
     ScoresModule,
+    GameStateModule,
   ],
   controllers: [AppController],
   providers: [AppService],
